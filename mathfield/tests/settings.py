@@ -17,8 +17,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'testapp',
     'mathfield',
+    'mathfield.tests',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -31,7 +31,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'urls'
+ROOT_URLCONF = 'mathfield.tests.urls'
 
 DATABASES = {
     'default': {

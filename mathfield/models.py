@@ -1,6 +1,5 @@
-from collections import namedtuple
 from django.db import models
-from bs4 import BeautifulSoup
+import json
 
 class MathField(models.TextField):
 
@@ -14,11 +13,8 @@ class MathField(models.TextField):
         if isinstance(value, LatexData):
             return value
 
-        html_soup = BeautifulSoup(value)
-        html = html_soup.find_all(class='katex')[0] # only the first instance
-        raw = value[len(html):] # the rest of the string is the raw input
-
-        return namedtuple(raw=raw, html=html)
+        json_dec = json.decoded.JSONDecoder()
+        return json_dec.decode(value)
 
     def get_prep_value(self, value):
-        return ''.join(value.html, value.raw)
+        return json.dumps(value)
