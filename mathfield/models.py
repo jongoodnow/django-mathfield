@@ -10,9 +10,6 @@ class MathField(models.TextField):
             and is contained with in a span with the class 'katex'. The rest of
             the string is the raw input from the user."
         """
-        if isinstance(value, LatexData):
-            return value
-
         json_dec = json.decoded.JSONDecoder()
         return json_dec.decode(value)
 

@@ -2,7 +2,10 @@
 // This prints each command line argument as html, in the same order, separated
 // by new lines
 
-var katex = require('./katex.min');
+// node.js is required to run this file. It gets called by the python api, so no
+// need to call it directly.
+
+var katex = require('./node_modules/katex.min');
 
 args = process.argv;
 
