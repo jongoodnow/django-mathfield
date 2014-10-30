@@ -37,9 +37,12 @@ def get_math(raw='', html=''):
     # generate_html.js must be passed all the math text ask command line args. 
     # The dollar signs get stripped in advanced because the shell will interpret 
     # those as variables. The program will return each math object separated by
-    # newlines
-    results = [(mat.start(2), mat.end(2), mat.group(2).strip()) 
-                for mat in reg if mat]
+    # newlines. KaTeX doesn't understand actual dollar signs if they are
+    # followed by another character (like x=\$2), so add a space after those
+    results = [(mat.start(2), 
+                mat.end(2), 
+                mat.group(2).strip().replace('\\$', '\\$ ')
+              ) for mat in reg if mat]
 
     if results == []:
         return {'raw': raw, 'html': raw}
@@ -47,11 +50,10 @@ def get_math(raw='', html=''):
     math_start_positions, math_end_positions, raw_math = zip(*results)
 
     js_results = subprocess.check_output([
-        'node', 
-        os.path.join(os.path.dirname(__file__), 
-            'generate_html.js')
-        ] + list(raw_math)
-    )
+            'node', 
+            os.path.join(os.path.dirname(__file__), 'generate_html.js')
+        ] + list(raw_math))
+
     html_bits = js_results.strip('\n').split('\n')
 
     final = []
@@ -59,8 +61,11 @@ def get_math(raw='', html=''):
     for index, code in enumerate(html_bits):
         # measurements are one off from the index of the math to eliminate the
         # dollar sign specifiers
-        final.append(raw[loc:math_start_positions[index]].strip('$'))
+        final.append(raw[loc:math_start_positions[index]]
+                        .strip('$').replace('\\$', '$'))
         final.append(code)
         loc = math_end_positions[index] + 1
+
+    final.append(raw[loc:].replace('\\$', '$'))
 
     return {'raw': raw, 'html': ''.join(final)}
