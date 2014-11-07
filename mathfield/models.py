@@ -36,7 +36,7 @@ class MathField(models.TextField):
 
     def formfield(self, **kwargs):
         defaults = {
-            'help_text': ('Type text as you would normally.' 
+            'help_text': ('Type text as you would normally. ' 
                 'If you want to write LaTeX, surround it with $ characters.')
         }
         defaults.update(kwargs)
