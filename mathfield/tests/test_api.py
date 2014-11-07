@@ -1,5 +1,4 @@
 from django.test import TestCase
-from collections import namedtuple
 import mathfield.api as api
 
 class APITestCase(TestCase):

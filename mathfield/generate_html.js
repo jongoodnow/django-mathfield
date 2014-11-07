@@ -13,6 +13,6 @@ for(var i = 2; i < args.length; i++){
     var math = args[i];
     var html = katex.renderToString(math);
 
-    // not using console.log because we don't want to print \r, even on Windows
+    // not using console.log because we don't want to print \r on Windows
     process.stdout.write(html + '\n');
 }

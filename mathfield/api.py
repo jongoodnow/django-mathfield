@@ -1,6 +1,9 @@
+# -*- coding: utf-8 -*-
+
 import subprocess
 import os
 import re
+from django.utils.encoding import smart_unicode
 
 # These are functions for developers to use externally
 
@@ -25,10 +28,11 @@ def get_math(raw='', html=''):
 
         * Blocks of math must be enclosed in dollar signs. This is true whether
           your math is LaTeX or Python math. If you need the normal dollar 
-          signs, use dollar signs proceeded by backslashes, `\$`.
+          signs, use dollar signs preceeded by backslashes, `\$`.
 
         * NODE.JS MUST BE INSTALLED FOR THIS FUNCTION TO RUN
     """
+
     if raw == '' or html != '':
         return {'raw': raw, 'html': html}
 
@@ -49,12 +53,23 @@ def get_math(raw='', html=''):
 
     math_start_positions, math_end_positions, raw_math = zip(*results)
 
-    js_results = subprocess.check_output([
-            'node', 
-            os.path.join(os.path.dirname(__file__), 'generate_html.js')
-        ] + list(raw_math))
+    # prepare the shell to get the LaTeX via a call to Node.js
+    # the shell is not explicitly called so there's no danger of shell injection
+    # The command `node` must be on the system path
+    env = dict(os.environ)
+    env['LC_ALL'] = 'en_US.UTF-8' # accept unicode characters as output
+    p = subprocess.Popen([
+        'node', 
+        os.path.join(os.path.dirname(__file__), 'generate_html.js')] 
+            + list(raw_math),
+        env=env, 
+        stdout=subprocess.PIPE, 
+        stderr=subprocess.PIPE)
+    node_output, node_error = p.communicate()
+    if node_error:
+        raise NodeError(node_error)
 
-    html_bits = js_results.strip('\n').split('\n')
+    html_bits = node_output.strip('\n').split('\n')
 
     final = []
     loc = 0
@@ -63,9 +78,14 @@ def get_math(raw='', html=''):
         # dollar sign specifiers
         final.append(raw[loc:math_start_positions[index]]
                         .strip('$').replace('\\$', '$'))
-        final.append(code)
+        final.append(smart_unicode(code))
         loc = math_end_positions[index] + 1
 
     final.append(raw[loc:].replace('\\$', '$'))
+    final_string = u''.join(final)
 
-    return {'raw': raw, 'html': ''.join(final)}
+    return {'raw': raw, 'html': final_string}
+
+
+class NodeError(Exception):
+    pass
