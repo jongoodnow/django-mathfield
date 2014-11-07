@@ -1,10 +1,9 @@
 from django.db import models
-from mathfield.widgets import MathFieldWidget, MathFieldForm
 import json
 
 class MathField(models.TextField):
 
-    description = "Field that allows you to write LaTeX and display it as HTML."
+    description = 'Field that allows you to write LaTeX and display it as HTML.'
 
     def to_python(self, value):
         """ The data gets stored into a single text field. The html appears 
@@ -13,17 +12,14 @@ class MathField(models.TextField):
         """
         if not value:
             return None
-        json_dec = json.decoded.JSONDecoder()
-        return json_dec.decode(value)
+        return json.loads(value)
 
     def get_prep_value(self, value):
         return json.dumps(value)
 
     def formfield(self, **kwargs):
         defaults = {
-            'form_class': MathFieldForm, 
-            'help_text': 'Type text as you would normally. If you want to write LaTeX, surround it with $ characters.',
-            'widget': MathFieldWidget,
+            'help_text': 'Type text as you would normally. If you want to write LaTeX, surround it with $ characters.'
         }
         defaults.update(kwargs)
         field = super(MathField, self).formfield(**defaults)
