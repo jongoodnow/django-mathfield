@@ -16,25 +16,30 @@
         var loc = 0;
         while(match){
             var rawMath = match[2];
+            var mathlength = rawMath.length;
             // the raw math will be surrounded by $ characters, which need to be
             // removed. Since JS doesn't support negative lookbehinds in regex,
             // the first character of the string will be the character before
             // the $, unless it occurred at the beginning of the string. That
             // needs to be removed too.
             var mathStart = match['index'];
-            if(match[0][0] !== '$'){
+            if(mathStart === 0){
+                mathlength += 1;
+            }
+            else{
                 mathStart += 1;
             }
             var prestring = rawstring.slice(loc, mathStart);
             prestring = prestring.replace('\\$', '$');
             returnlist.push(prestring);
+            loc += prestring.length;
 
             rawMath = rawMath.replace('\\$', '\\$ ');
             var html = katex.renderToString(rawMath);
             html = html.replace('\\$ ', '$')
             returnlist.push(html);
 
-            loc += rawMath.length + 2;
+            loc += match[1].length + mathlength + 1;
             match = reg.exec(rawstring);
         }
         returnlist.push(rawstring.slice(loc, rawstring.length));
@@ -88,7 +93,7 @@
             var latex = textarea.val();
             var html = compileLaTeX(latex);
             preview.html(html);
-        }).change();
+        });
 
     });
 
