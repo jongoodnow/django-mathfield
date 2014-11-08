@@ -1,21 +1,5 @@
 (function($){
 
-    /* The form input contains both the raw LaTeX and the compiled HTML.
-     * it should be modified so that it only shows the LaTeX, while the HTML
-     * is rendered in an adjacent preview span.
-     */
-    function parseJSONFromForm(textareaID){
-        var textarea = $('textarea#' + textareaID);
-        var rawInput = textarea.val();
-        if(!rawInput){
-            return // there's nothing there yet
-        }
-        var data;
-        data = JSON.parse(rawInput);
-        //textarea.val(data['raw']);
-        alert(compileLaTeX(data['raw']));
-    }
-
     /* pass compileLaTeX a string of text. LaTeX should be surrounded by dollar
      * signs ($). Text outside of $s will be rendered as normal text. Dollar
      * signs preceeded by backslashes (\) will be rendered as normal dollar
@@ -57,14 +41,55 @@
         return returnlist.join('');
     }
 
+    /* get the selector of the input */
+    function getInput(textareaID){
+        return $('textarea#' + textareaID);
+    }
+
+    /* get the selector of the containing div of the mathfield textarea input */
+    function getContainer(textareaID){
+        return $('div#' + textareaID + '-container');
+    }
+
+    /* get the selector of preview span next to the mathfeild textarea input */
+    function getPreview(textareaID){
+        return $('span#' + textareaID + '-preview');
+    }
+
     /* renderMathFieldForm is called directly after the form is created.
      * This is only called automatically if the MathFieldWidget is specified
      * for the field. Otherwise it must be called manually. If you are calling
      * manually, make sure that the widget you are using using a textarea input
      */
-    this.renderMathFieldForm = function(textareaID){
-        parseJSONFromForm(textareaID);
+    this.renderMathFieldForm = function(textareaID, rawtext, html){
+        var textarea = getInput(textareaID);
+        textarea.addClass('mathfield-latexform');
+        var container = getContainer(textareaID);
+        // the input initially shows the JSON. Make it just show the raw text.
+        textarea.val(rawtext);
 
+        // add the preview next to the text area
+        container.append('<span id="' + textareaID + '-preview" style="border: '
+            + '1px solid #CCC; width: ' + textarea.width() + 'px; height:' 
+            + textarea.height() + 'px; display: inline-block; margin: 2px'
+            + ' 10px; padding: 2px; overflow-y: scroll; word-wrap: break-word;"'
+            + '></span>');
+
+        var preview = getPreview(textareaID);
+        preview.html(html);
     }
+
+    $(document).ready(function(){
+
+        $('.mathfield-latexform').keyup(function(event){
+            var id = event.target.id;
+            var textarea = getInput(id);
+            var preview = getPreview(id);
+            var latex = textarea.val();
+            var html = compileLaTeX(latex);
+            preview.html(html);
+        }).change();
+
+    });
 
 })(django.jQuery);
