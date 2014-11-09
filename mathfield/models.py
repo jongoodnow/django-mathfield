@@ -31,9 +31,9 @@ class MathField(models.TextField):
             ret = json.loads(value)
         except (ValueError, TypeError):
             # we got a string instead of valid JSON. Let's make the LaTeX now.
-            ret = get_math(value)
-        hp = HTMLParser.HTMLParser()
-        ret['html'] = hp.unescape(ret['html'])
+            #ret = get_math(value)
+            ret = value
+
         return ret
 
     def get_prep_value(self, value):

@@ -3,6 +3,7 @@ from django.utils.safestring import mark_safe
 from mathfield.api import get_math, NodeError
 import textwrap
 import json
+import cgi
 
 class MathFieldWidget(forms.Textarea):
     
@@ -17,12 +18,12 @@ class MathFieldWidget(forms.Textarea):
                 # the JSON couldn't be decoded. This could mean that only the
                 # raw value is stored. We'll pass this to the browser, so that
                 # it can generate the html itself.
-                raw = value
+                raw = cgi.escape(value)
                 html = ''
             else:
                 raw = valuedict['raw'] if 'raw' in value else ''
                 html = valuedict['html'] if 'html' in value else ''
-                raw = raw.replace('\\', '\\\\')
+                raw = cgi.escape(raw.replace('\\', '\\\\'))
                 html = html.replace('"', '\\"')
         else:
             raw, html = '', ''
@@ -31,6 +32,8 @@ class MathFieldWidget(forms.Textarea):
                 src="/static/mathfield/katex/katex.min.js"></script>
             <script type="text/javascript" 
                 src="/static/mathfield/js/mathfield.js"></script>
+            <script type="text/javascript"
+                src="/static/mathfield/js/encoder.js"></script>
             <script type="text/javascript">
                 renderMathFieldForm("%s", "%s", "%s");
             </script>

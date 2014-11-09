@@ -31,6 +31,7 @@
             }
             var prestring = rawstring.slice(loc, mathStart);
             prestring = prestring.replace('\\$', '$');
+            prestring = Encoder.htmlEncode(prestring);
             returnlist.push(prestring);
             loc += prestring.length;
 
@@ -42,7 +43,9 @@
             loc += match[1].length + mathlength + 1;
             match = reg.exec(rawstring);
         }
-        returnlist.push(rawstring.slice(loc, rawstring.length));
+        returnlist.push(Encoder.htmlEncode(
+            rawstring.slice(loc, rawstring.length)
+        ));
         return returnlist.join('');
     }
 
@@ -71,6 +74,23 @@
         preview.html(html);
     }
 
+    /* The form in the django admin wants valid JSON containing the raw LaTeX
+     * and the HTML. For editing, the input contains only the LaTeX, so the
+     * contents of the input must be modified before submitting.
+     */
+    function serializeForSubmission(){
+        $('.mathfield-latexform').each(function(i, obj){
+            var textarea = getInput(obj.target.id);
+            var raw = textarea.val();
+            var html = getPreview(obj.target.id).html();
+            var ret = {
+                'raw': raw,
+                'html': html,
+            }
+            textarea.val(JSON.stringify(ret));
+        });
+    }
+
     /* renderMathFieldForm is called directly after the form is created.
      * This is only called automatically if the MathFieldWidget is specified
      * for the field. Otherwise it must be called manually. If you are calling
@@ -81,7 +101,7 @@
         textarea.addClass('mathfield-latexform');
         var container = getContainer(textareaID);
         // the input initially shows the JSON. Make it just show the raw text.
-        textarea.val(rawtext);
+        textarea.val(Encoder.htmlDecode(rawtext));
 
         // add the preview next to the text area
         container.append('<span id="' + textareaID + '-preview" style="border: '
@@ -94,25 +114,15 @@
         preview.html(html);
     }
 
+    /* Listen for whenever the input is modified and when the form is submitted 
+     */
     $(document).ready(function(){
 
         $('.mathfield-latexform').keyup(function(event){
             updatePreview(event.target.id);
         });
 
-        $(form).submit(function(event){
-            $('.mathfield-latexform').each(function(i, obj){
-                var textarea = getInput(obj.target.id);
-                var raw = textarea.val();
-                var html = getPreview(obj.target.id).html();
-                var ret = {
-                    'raw': raw,
-                    'html': html,
-                }
-                textarea.val(JSON.stringify(ret));
-            });
-        });
-
+        $(form).submit(serializeForSubmission);
 
     });
 

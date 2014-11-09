@@ -40,7 +40,7 @@ by adding :code:`MathFieldWidget` as a widget when registering your model in
     from yourapp.models import Lesson
 
     class LessonAdminForm(forms.ModelForm):
-    
+
         class Meta:
             widgets = {
                 'lesson_plan': MathFieldWidget
@@ -52,3 +52,9 @@ by adding :code:`MathFieldWidget` as a widget when registering your model in
 
 
     admin.site.register(Lesson, LessonAdmin)
+
+After adding some data to your database, you can output the rendered HTML to
+a template::
+
+    Show the raw LaTeX with: {{ lesson.lesson_plan.raw }}
+    Show the rendered HTML with: {{ lesson.lesson_plan.html }}
