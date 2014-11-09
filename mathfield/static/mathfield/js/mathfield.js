@@ -61,6 +61,16 @@
         return $('span#' + textareaID + '-preview');
     }
 
+    /* compile the LaTeX in a textarea and push it to the preview span */
+    function updatePreview(textareaID){
+        var id = textareaID;
+        var textarea = getInput(id);
+        var preview = getPreview(id);
+        var latex = textarea.val();
+        var html = compileLaTeX(latex);
+        preview.html(html);
+    }
+
     /* renderMathFieldForm is called directly after the form is created.
      * This is only called automatically if the MathFieldWidget is specified
      * for the field. Otherwise it must be called manually. If you are calling
@@ -87,13 +97,22 @@
     $(document).ready(function(){
 
         $('.mathfield-latexform').keyup(function(event){
-            var id = event.target.id;
-            var textarea = getInput(id);
-            var preview = getPreview(id);
-            var latex = textarea.val();
-            var html = compileLaTeX(latex);
-            preview.html(html);
+            updatePreview(event.target.id);
         });
+
+        $(form).submit(function(event){
+            $('.mathfield-latexform').each(function(i, obj){
+                var textarea = getInput(obj.target.id);
+                var raw = textarea.val();
+                var html = getPreview(obj.target.id).html();
+                var ret = {
+                    'raw': raw,
+                    'html': html,
+                }
+                textarea.val(JSON.stringify(ret));
+            });
+        });
+
 
     });
 

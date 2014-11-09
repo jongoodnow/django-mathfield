@@ -1,0 +1,17 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        {% load staticfiles %}
+        <link rel="stylesheet" type="text/css" href="{% static 'mathfield/katex/katex.min.css' %}">
+    </head>
+    <body>
+        <table>
+        {% for lesson in lessons %}
+            <tr>
+                <td>{{ lesson.math.raw }}</td>
+                <td>{{ lesson.math.html|safe }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+    </body>
+</html>

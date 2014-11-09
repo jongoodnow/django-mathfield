@@ -5,10 +5,13 @@ from django.db import models
 from django.utils.encoding import smart_unicode
 from mathfield.api import get_math
 import json
+import HTMLParser
 
 class MathField(models.TextField):
 
     description = 'Field that allows you to write LaTeX and display it as HTML.'
+
+    __metaclass__ = models.SubfieldBase
 
     def to_python(self, value):
         """ The data is serialized as JSON with the keys `raw` and `html` where
@@ -29,6 +32,8 @@ class MathField(models.TextField):
         except ValueError:
             # we got a string instead of valid JSON. Let's make the LaTeX now.
             ret = get_math(value)
+        hp = HTMLParser.HTMLParser()
+        ret['html'] = hp.unescape(ret['html'])
         return ret
 
     def get_prep_value(self, value):
