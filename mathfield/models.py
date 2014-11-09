@@ -29,7 +29,7 @@ class MathField(models.TextField):
             return None
         try: 
             ret = json.loads(value)
-        except ValueError:
+        except (ValueError, TypeError):
             # we got a string instead of valid JSON. Let's make the LaTeX now.
             ret = get_math(value)
         hp = HTMLParser.HTMLParser()
