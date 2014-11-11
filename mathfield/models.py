@@ -2,10 +2,7 @@
 
 from __future__ import unicode_literals
 from django.db import models
-from django.utils.encoding import smart_unicode
-from mathfield.api import get_math
 import json
-import HTMLParser
 
 class MathField(models.TextField):
 
@@ -26,9 +23,11 @@ class MathField(models.TextField):
         """
         if value is None:
             return None
-        elif value == "":
-            return {}
-        elif isinstance(value, basestring):
+
+        if value == "":
+            return {'raw': '', 'html': ''}
+
+        if isinstance(value, basestring):
             try:
                 return dict(json.loads(value))
             except (ValueError, TypeError):
@@ -36,16 +35,17 @@ class MathField(models.TextField):
         
         if isinstance(value, dict):
             return value
-        else:
-            return {}
+        
+        return {'raw': '', 'html': ''}
         
     def get_prep_value(self, value):
         if not value:
             return ""
-        elif isinstance(value, basestring):
+
+        if isinstance(value, basestring):
             return value
-        else:
-            return json.dumps(value)
+            
+        return json.dumps(value)
 
     def formfield(self, **kwargs):
         defaults = {

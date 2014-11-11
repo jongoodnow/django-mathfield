@@ -56,5 +56,25 @@ by adding :code:`MathFieldWidget` as a widget when registering your model in
 After adding some data to your database, you can output the rendered HTML to
 a template::
 
-    Show the raw LaTeX with: {{ lesson.lesson_plan.raw }}
-    Show the rendered HTML with: {{ lesson.lesson_plan.html }}
+    <!DOCTYPE HTML>
+    <html>
+        <head>
+            {% load staticfiles %}
+            <link rel="stylesheet" type="text/css" href="{% static 'mathfield/css/mathfield.css' %}">
+        </head>
+        <body>
+            <div>
+                Raw LaTeX: {{ lesson.lesson_plan.raw }}
+            </div>
+            <div>
+                Rendered HTML: {{ lesson.lesson_plan.html|safe }}
+            </div>
+        </body>
+    </html>
+
+Make sure that you include the :code:`mathfield.css` stylesheet in your template
+head, and include :code:`|safe` with with the MathField HTML value. This will
+give Django permission to render the text in that field as HTML. It is safe to
+do this provided that you only update the HTML using the form in the Django
+admin or the functions provided in the MathField API. Be very careful when
+updating the HTML yourself!
