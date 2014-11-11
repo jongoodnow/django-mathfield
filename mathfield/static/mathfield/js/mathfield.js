@@ -66,29 +66,11 @@
 
     /* compile the LaTeX in a textarea and push it to the preview span */
     function updatePreview(textareaID){
-        var id = textareaID;
-        var textarea = getInput(id);
-        var preview = getPreview(id);
+        var textarea = getInput(textareaID);
+        var preview = getPreview(textareaID);
         var latex = textarea.val();
         var html = compileLaTeX(latex);
         preview.html(html);
-    }
-
-    /* The form in the django admin wants valid JSON containing the raw LaTeX
-     * and the HTML. For editing, the input contains only the LaTeX, so the
-     * contents of the input must be modified before submitting.
-     */
-    function serializeForSubmission(){
-        $('.mathfield-latexform').each(function(i, obj){
-            var textarea = getInput(obj.target.id);
-            var raw = textarea.val();
-            var html = getPreview(obj.target.id).html();
-            var ret = {
-                'raw': raw,
-                'html': html,
-            }
-            textarea.val(JSON.stringify(ret));
-        });
     }
 
     /* renderMathFieldForm is called directly after the form is created.
@@ -114,15 +96,33 @@
         preview.html(html);
     }
 
+    /* The form in the django admin wants valid JSON containing the raw LaTeX
+     * and the HTML. For editing, the input contains only the LaTeX, so the
+     * contents of the input must be modified before submitting.
+     */
+    this.serializeAndSubmit = function(){
+        $('.mathfield-latexform').each(function(i, obj){
+            var textarea = getInput(obj.id);
+            var raw = textarea.val();
+            var html = getPreview(obj.id).html();
+            var ret = {
+                "raw": raw,
+                "html": html,
+            };
+            textarea.val(JSON.stringify(ret));
+        });
+
+        return false;
+    }
+
     /* Listen for whenever the input is modified and when the form is submitted 
      */
     $(document).ready(function(){
+        $('form').attr('onSubmit', 'javascript:serializeAndSubmit()');
 
         $('.mathfield-latexform').keyup(function(event){
             updatePreview(event.target.id);
         });
-
-        $(form).submit(serializeForSubmission);
 
     });
 

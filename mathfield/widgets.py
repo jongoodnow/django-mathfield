@@ -12,21 +12,12 @@ class MathFieldWidget(forms.Textarea):
         output = '<div id="%s-container"><span>%s</span></div>' %(
             attrs['id'], output)
         if value:
-            try:
-                valuedict = json.loads(value)
-            except (ValueError, TypeError):
-                # the JSON couldn't be decoded. This could mean that only the
-                # raw value is stored. We'll pass this to the browser, so that
-                # it can generate the html itself.
-                raw = cgi.escape(value)
-                html = ''
-            else:
-                raw = valuedict['raw'] if 'raw' in value else ''
-                html = valuedict['html'] if 'html' in value else ''
-                raw = cgi.escape(raw.replace('\\', '\\\\'))
-                html = html.replace('"', '\\"')
+            raw = value['raw'] if 'raw' in value else ''
+            html = value['html'] if 'html' in value else ''
+            raw = cgi.escape(raw.replace('\\', '\\\\'))
+            html = html.replace('"', '\\"')
         else:
-            raw, html = '', ''
+            raw = html = ''
         output += textwrap.dedent("""
             <script type="text/javascript" 
                 src="/static/mathfield/katex/katex.min.js"></script>

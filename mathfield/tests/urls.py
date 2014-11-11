@@ -6,7 +6,6 @@ from models import Math
 
 def lessons(request):
     lessons = Math.objects.all()
-    print lessons[0].math
     return render(request, 'tests/lessons.html', {'lessons': lessons})
 
 

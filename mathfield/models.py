@@ -24,20 +24,28 @@ class MathField(models.TextField):
             specify that the MathFields that you use are assigned to the widget
             `MathFieldWidget` in your app's admin.py.
         """
-        value = smart_unicode(value)
-        if not value:
+        if value is None:
             return None
-        try: 
-            ret = json.loads(value)
-        except (ValueError, TypeError):
-            # we got a string instead of valid JSON. Let's make the LaTeX now.
-            #ret = get_math(value)
-            ret = value
-
-        return ret
-
+        elif value == "":
+            return {}
+        elif isinstance(value, basestring):
+            try:
+                return dict(json.loads(value))
+            except (ValueError, TypeError):
+                raise exceptions.ValidationError(self.error_messages['invalid'])
+        
+        if isinstance(value, dict):
+            return value
+        else:
+            return {}
+        
     def get_prep_value(self, value):
-        return json.dumps(value)
+        if not value:
+            return ""
+        elif isinstance(value, basestring):
+            return value
+        else:
+            return json.dumps(value)
 
     def formfield(self, **kwargs):
         defaults = {
