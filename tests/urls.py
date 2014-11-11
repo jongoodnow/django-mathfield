@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.shortcuts import render
-from models import Math
+from tests.models import Math
 
 
 def lessons(request):

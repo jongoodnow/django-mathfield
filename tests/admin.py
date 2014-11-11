@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django import forms
 from mathfield.widgets import MathFieldWidget
-from mathfield.tests.models import Math
+from tests.models import Math
 
 class MathAdminForm(forms.ModelForm):
     class Meta:
