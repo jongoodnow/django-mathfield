@@ -1,3 +1,12 @@
+/*
+ * JS for rendering the HTML LaTeX preview of django-mathfield in the Django 
+ *   admin and submitting the rendered LaTeX to the DB.
+ * Author: Jonathan Goodnow
+ * Source: https://github.com/jongoodnow/django-mathfield
+ * Licence: The BSD License
+ * Copyright: (c) 2014 Jonathan Goodnow
+ */
+
 (function($){
 
     /* pass compileLaTeX a string of text. LaTeX should be surrounded by dollar
