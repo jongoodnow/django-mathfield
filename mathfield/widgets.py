@@ -1,6 +1,5 @@
 from django import forms
 from django.utils.safestring import mark_safe
-from mathfield.api import get_math, NodeError
 import textwrap
 import json
 import cgi

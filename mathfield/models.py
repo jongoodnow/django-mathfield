@@ -2,6 +2,7 @@
 
 from __future__ import unicode_literals
 from django.db import models
+from django.core import exceptions
 import json
 
 class MathField(models.TextField):
@@ -40,12 +41,30 @@ class MathField(models.TextField):
         
     def get_prep_value(self, value):
         if not value:
-            return ""
+            return json.dumps({'raw': '', 'html': ''})
 
         if isinstance(value, basestring):
-            return value
-            
-        return json.dumps(value)
+            try:
+                dictval = dict(json.loads(value))
+            except (ValueError, TypeError):
+                raise exceptions.ValidationError(self.error_messages['invalid'])
+            else:
+                if {'raw', 'html'} == set(dictval.keys()):
+                    return value
+                else:                
+                    raise exceptions.ValidationError(('MathFields must be '
+                        ' provided with a dictionary containing only the keys '
+                        '"raw" and "html".'))
+
+        if isinstance(value, dict):
+            if {'raw', 'html'} == set(value.keys()):
+                return json.dumps(value)
+            else:
+                raise exceptions.ValidationError(('MathFields must be provided '
+                    'with a dictionary containing only the keys "raw" and '
+                    '"html".'))
+
+        return json.dumps({'raw': '', 'html': ''})
 
     def formfield(self, **kwargs):
         defaults = {
