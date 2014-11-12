@@ -3,7 +3,7 @@ django-mathfield
 
 MathField is a model field that allows you to input LaTeX and store the compiled
 HTML on your database. It comes with a form for the Django Admin that provides
-live previews of your text.
+live previews of your rendered LaTeX.
 
 Installation and Setup
 ----------------------
@@ -15,7 +15,7 @@ Get it installed with::
 
     $ pip install django-mathfield
 
-Add :code:`'mathfield'` to your :code:`INSTALLED_APPS` in your Django Project's
+Add :code:`'mathfield'` to your :code:`INSTALLED_APPS` in your Django project's
 :code:`settings.py`.
 
 Add a :code:`MathField` to one of your models like this::

@@ -3,7 +3,14 @@
 from __future__ import unicode_literals
 from django.db import models
 from django.core import exceptions
+from mathfield.api import store_math
 import json
+
+
+MathFieldValidationError = lambda self, value: exceptions.ValidationError(
+    'Could not resolve "%s" to a dictionary with only keys "raw" and "html"'
+    %str(value))
+
 
 class MathField(models.TextField):
 
@@ -32,7 +39,9 @@ class MathField(models.TextField):
             try:
                 return dict(json.loads(value))
             except (ValueError, TypeError):
-                raise exceptions.ValidationError(self.error_messages['invalid'])
+                # the value was stored as just a string. Try to compile it to
+                # LaTeX and return a dictionary, or raise a NodeError
+                return store_math(value)
         
         if isinstance(value, dict):
             return value
@@ -45,24 +54,24 @@ class MathField(models.TextField):
 
         if isinstance(value, basestring):
             try:
-                dictval = dict(json.loads(value))
+                dictval = json.loads(value)
             except (ValueError, TypeError):
-                raise exceptions.ValidationError(self.error_messages['invalid'])
+                # This means the user tried to pass just a string of text in.
+                # The HTML will be generated manually, but this will only work
+                # if node.js is installed on the server. Otherwise, a NodeError
+                # will be raised.
+                return json.dumps(store_math(value))
             else:
                 if {'raw', 'html'} == set(dictval.keys()):
                     return value
                 else:                
-                    raise exceptions.ValidationError(('MathFields must be '
-                        ' provided with a dictionary containing only the keys '
-                        '"raw" and "html".'))
+                    raise MathFieldValidationError(self, value)
 
         if isinstance(value, dict):
             if {'raw', 'html'} == set(value.keys()):
                 return json.dumps(value)
             else:
-                raise exceptions.ValidationError(('MathFields must be provided '
-                    'with a dictionary containing only the keys "raw" and '
-                    '"html".'))
+                raise MathFieldValidationError(self, value)
 
         return json.dumps({'raw': '', 'html': ''})
 

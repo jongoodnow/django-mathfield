@@ -3,18 +3,18 @@
 import subprocess
 import os
 import re
+import cgi
 from django.utils.encoding import smart_unicode
 
 # These are functions for developers to use externally
 
-def get_math(raw='', html=''):
+def store_math(raw='', html=''):
     """ MathFields must be stored in the database as a string containing both
         the raw math and html.
 
         Arguments:
 
-        * raw: this is your raw math as either Python math, LaTeX, or just
-                     regular text
+        * raw: this is your raw math as either LaTeX or just regular text
 
         * html: if you already know the html, there's no sense in calculating it
                 again! But if you don't know it, leave this one blank and it 
@@ -26,9 +26,9 @@ def get_math(raw='', html=''):
 
         NOTICES:
 
-        * Blocks of math must be enclosed in dollar signs. This is true whether
-          your math is LaTeX or Python math. If you need the normal dollar 
-          signs, use dollar signs preceeded by backslashes, `\$`.
+        * Blocks of math must be enclosed in dollar signs. 
+          If you need the normal dollar signs, use dollar signs preceeded by 
+          backslashes, `\$`.
 
         * NODE.JS MUST BE INSTALLED FOR THIS FUNCTION TO RUN
     """
@@ -76,12 +76,14 @@ def get_math(raw='', html=''):
     for index, code in enumerate(html_bits):
         # measurements are one off from the index of the math to eliminate the
         # dollar sign specifiers
-        final.append(raw[loc:math_start_positions[index]]
-                        .strip('$').replace('\\$', '$'))
+        # KaTeX will handle HTML encoding for the math text, but regular text
+        # must have HTML stripped out for security reasons.
+        final.append(cgi.escape(raw[loc:math_start_positions[index]]
+                        .strip('$').replace('\\$', '$')))
         final.append(smart_unicode(code))
         loc = math_end_positions[index] + 1
 
-    final.append(raw[loc:].replace('\\$', '$'))
+    final.append(cgi.escape(raw[loc:].replace('\\$', '$')))
     final_string = u''.join(final)
 
     return {'raw': raw, 'html': final_string}
