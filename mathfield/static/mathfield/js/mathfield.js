@@ -126,7 +126,7 @@
             + textarea.height() + 'px; display: inline-block; margin: 2px'
             + ' 10px; padding: 2px; overflow-y: auto; word-wrap: break-word;"'
             + '></span><span style="position: relative; left: -60px; bottom: '
-            + '8px; color: #BBB">Preview</span>');
+            + '8px; color: #BBB;">Preview</span>');
 
         var preview = getPreview(textareaID);
         preview.html(html);
