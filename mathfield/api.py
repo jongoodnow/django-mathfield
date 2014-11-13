@@ -58,14 +58,19 @@ def store_math(raw='', html=''):
     # The command `node` must be on the system path
     env = dict(os.environ)
     env['LC_ALL'] = 'en_US.UTF-8' # accept unicode characters as output
-    p = subprocess.Popen([
-        'node', 
-        os.path.join(os.path.dirname(__file__), 'generate_html.js')] 
-            + list(raw_math),
-        env=env, 
-        stdout=subprocess.PIPE, 
-        stderr=subprocess.PIPE)
-    node_output, node_error = p.communicate()
+    try:
+        p = subprocess.Popen([
+            'node', 
+            os.path.join(os.path.dirname(__file__), 'generate_html.js')] 
+                + list(raw_math),
+            env=env, 
+            stdout=subprocess.PIPE, 
+            stderr=subprocess.PIPE)
+    except WindowsError:
+        raise NodeError("Node.js is not on your system path.")
+    else:
+        node_output, node_error = p.communicate()
+    
     if node_error:
         raise NodeError(node_error)
 
@@ -90,4 +95,7 @@ def store_math(raw='', html=''):
 
 
 class NodeError(Exception):
+    """ Exception that gets raised when Node.js is not installed, or when
+        it throws a runtime error.
+    """
     pass

@@ -10,6 +10,7 @@ class MathFieldWidget(forms.Textarea):
         output = super(MathFieldWidget, self).render(name, value, attrs)
         output = '<div id="%s-container"><span>%s</span></div>' %(
             attrs['id'], output)
+
         if value:
             raw = value['raw'] if 'raw' in value else ''
             html = value['html'] if 'html' in value else ''
@@ -17,6 +18,7 @@ class MathFieldWidget(forms.Textarea):
             html = html.replace('"', '\\"')
         else:
             raw = html = ''
+            
         output += textwrap.dedent("""
             <script type="text/javascript" 
                 src="/static/mathfield/katex/katex.min.js"></script>

@@ -34,3 +34,9 @@ class APITestCase(TestCase):
             'raw': '\\$foo$x=\\$ 2$bar\\$',
             'html': """$foo<span class="katex"><span class="katex-inner"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:0.80556em;vertical-align:-0.05556em;"></span><span class="base textstyle uncramped"><span class="mord mathit">x</span><span class="mrel">=</span><span class="mord">$</span><span class="mord">2</span></span></span></span>bar$"""
         })
+
+    def test_store_math_escaped_html(self):
+        self.assertEqual(api.store_math('<script>alert(1);</script>$x=2$'), {
+            'raw': '<script>alert(1);</script>$x=2$',
+            'html': """&lt;script&gt;alert(1);&lt;/script&gt;<span class="katex"><span class="katex-inner"><span class="strut" style="height:0.64444em;"></span><span class="strut bottom" style="height:0.64444em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit">x</span><span class="mrel">=</span><span class="mord">2</span></span></span></span>"""
+        })
