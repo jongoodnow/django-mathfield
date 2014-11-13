@@ -32,9 +32,21 @@ def store_math(raw='', html=''):
 
         * NODE.JS MUST BE INSTALLED FOR THIS FUNCTION TO RUN
     """
-
     if raw == '' or html != '':
         return {'raw': raw, 'html': html}
+
+    return {'raw': raw, 'html': render_to_html(raw)}
+
+
+def render_to_html(raw):
+    """ Returns the HTML of a string of LaTeX. It can also contain plain text.
+        LaTeX must be surrounded by dollar signs. Preceed dollar signs with
+        backslashes to write literal dollar signs.
+
+        NODE.JS MUST BE INSTALLED FOR THIS FUNCTION TO RUN
+    """
+    if not raw:
+        return ''
 
     reg = re.finditer(r"(^|(?<!\\))\$(([^\$]|\\\$)*[^\\])\$", raw)
 
@@ -49,7 +61,7 @@ def store_math(raw='', html=''):
               ) for mat in reg if mat]
 
     if results == []:
-        return {'raw': raw, 'html': raw}
+        return raw
 
     math_start_positions, math_end_positions, raw_math = zip(*results)
 
@@ -89,9 +101,7 @@ def store_math(raw='', html=''):
         loc = math_end_positions[index] + 1
 
     final.append(cgi.escape(raw[loc:].replace('\\$', '$')))
-    final_string = u''.join(final)
-
-    return {'raw': raw, 'html': final_string}
+    return u''.join(final)
 
 
 class NodeError(Exception):
