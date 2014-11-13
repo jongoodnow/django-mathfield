@@ -8,8 +8,8 @@ import json
 
 
 MathFieldValidationError = lambda self, value: exceptions.ValidationError(
-    'Could not resolve "%s" to a dictionary with only keys "raw" and "html"'
-    %str(value))
+    'Could not resolve "{0}" to a dictionary with only keys "raw" and "html"'
+    .format(str(value)))
 
 
 class MathField(models.TextField):

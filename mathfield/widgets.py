@@ -1,5 +1,6 @@
 from django import forms
 from django.utils.safestring import mark_safe
+from django.conf import settings
 import textwrap
 import json
 import cgi
@@ -8,7 +9,7 @@ class MathFieldWidget(forms.Textarea):
     
     def render(self, name, value, attrs=None):
         output = super(MathFieldWidget, self).render(name, value, attrs)
-        output = '<div id="%s-container"><span>%s</span></div>' %(
+        output = '<div id="{0}-container"><span>{1}</span></div>'.format(
             attrs['id'], output)
 
         if value:
@@ -18,17 +19,21 @@ class MathFieldWidget(forms.Textarea):
             html = html.replace('"', '\\"')
         else:
             raw = html = ''
-            
+
+        if hasattr(settings, 'STATIC_URL'):
+            static_url = getattr(settings, 'STATIC_URL', {})
+        else:
+            static_url = '/static/'
         output += textwrap.dedent("""
             <script type="text/javascript" 
-                src="/static/mathfield/katex/katex.min.js"></script>
+                src="{static}mathfield/katex/katex.min.js"></script>
             <script type="text/javascript" 
-                src="/static/mathfield/js/mathfield.js"></script>
+                src="{static}mathfield/js/mathfield.js"></script>
             <script type="text/javascript"
-                src="/static/mathfield/js/encoder.js"></script>
+                src="{static}mathfield/js/encoder.js"></script>
             <script type="text/javascript">
-                renderMathFieldForm("%s", "%s", "%s");
+                renderMathFieldForm("{id}", "{raw}", "{html}");
             </script>
-        """ %(attrs['id'], raw, html))
+        """.format(static=static_url, id=attrs['id'], raw=raw, html=html))
 
         return mark_safe(output)
