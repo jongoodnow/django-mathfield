@@ -82,6 +82,32 @@
         preview.html(html);
     }
 
+    /* the size of the preview should match the size of the input. This resizes
+     * the preview whenever the textarea is resized.
+     */
+    function resizePreview(textareaID) {
+        var textarea = getInput(textareaID);
+        var preview = getPreview(textareaID);
+        var resizeInt = null;
+
+        var resizeEvent = function() {
+            preview.outerWidth(textarea.outerWidth());
+            preview.outerHeight(textarea.outerHeight());
+        };
+
+        // firefox only
+        textarea.on("mousedown", function(e) {
+            resizeInt = setInterval(resizeEvent, 1000/15);
+        });
+
+        $(window).on("mouseup", function(e) {
+            if (resizeInt !== null) {
+                clearInterval(resizeInt);
+            }
+            resizeEvent();
+        });
+    };
+
     /* renderMathFieldForm is called directly after the form is created.
      * This is only called automatically if the MathFieldWidget is specified
      * for the field. Otherwise it must be called manually. If you are calling
@@ -98,11 +124,14 @@
         container.append('<span id="' + textareaID + '-preview" style="border: '
             + '1px solid #CCC; width: ' + textarea.width() + 'px; height:' 
             + textarea.height() + 'px; display: inline-block; margin: 2px'
-            + ' 10px; padding: 2px; overflow-y: scroll; word-wrap: break-word;"'
-            + '></span>');
+            + ' 10px; padding: 2px; overflow-y: auto; word-wrap: break-word;"'
+            + '></span><span style="position: relative; left: -60px; bottom: '
+            + '8px; color: #BBB">Preview</span>');
 
         var preview = getPreview(textareaID);
         preview.html(html);
+
+        resizePreview(textareaID);
     }
 
     /* The form in the django admin wants valid JSON containing the raw LaTeX
@@ -127,6 +156,7 @@
     /* Listen for whenever the input is modified and when the form is submitted 
      */
     $(document).ready(function(){
+
         $('form').attr('onSubmit', 'javascript:serializeAndSubmit()');
 
         $('.mathfield-latexform').keyup(function(event){

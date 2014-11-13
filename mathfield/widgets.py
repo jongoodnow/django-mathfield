@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from django import forms
 from django.utils.safestring import mark_safe
 from django.conf import settings
@@ -25,6 +26,8 @@ class MathFieldWidget(forms.Textarea):
         else:
             static_url = '/static/'
         output += textwrap.dedent("""
+            <link rel="stylesheet" type="text/css" 
+                href="{static}mathfield/css/mathfield.css"/>
             <script type="text/javascript" 
                 src="{static}mathfield/katex/katex.min.js"></script>
             <script type="text/javascript" 
