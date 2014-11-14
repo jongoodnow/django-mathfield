@@ -29,11 +29,7 @@ class MathFieldWidget(forms.Textarea):
             <link rel="stylesheet" type="text/css" 
                 href="{static}mathfield/css/mathfield.css"/>
             <script type="text/javascript" 
-                src="{static}mathfield/katex/katex.min.js"></script>
-            <script type="text/javascript" 
-                src="{static}mathfield/js/mathfield.js"></script>
-            <script type="text/javascript"
-                src="{static}mathfield/js/encoder.js"></script>
+                src="{static}mathfield/js/mathfield.min.js"></script>
             <script type="text/javascript">
                 renderMathFieldForm("{id}", "{raw}", "{html}");
             </script>

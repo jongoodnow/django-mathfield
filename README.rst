@@ -155,5 +155,5 @@ If you just want to pass in a string and get the HTML, use
 .. code:: python
 
     import mathfield
-    
+
     html = mathfield.render_to_html('One half is $\\frac{1}{2}$.')

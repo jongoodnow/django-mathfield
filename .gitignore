@@ -2,3 +2,5 @@
 *.sqlite3
 *.db
 migrations
+node_modules
+__pycache__

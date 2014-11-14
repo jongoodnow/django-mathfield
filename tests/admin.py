@@ -6,7 +6,8 @@ from tests.models import Math
 class MathAdminForm(forms.ModelForm):
     class Meta:
         widgets = {
-            'math': MathFieldWidget
+            'math': MathFieldWidget,
+            'math2': MathFieldWidget
         }
 
 

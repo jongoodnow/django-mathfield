@@ -5,7 +5,7 @@
 // node.js is required to run this file. It gets called by the python api, so no
 // need to call it directly.
 
-var katex = require('./node_modules/katex.min');
+var katex = require('./static/mathfield/js/katex.min');
 
 args = process.argv;
 
