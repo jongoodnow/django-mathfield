@@ -1,6 +1,9 @@
 *.py[cod]
 *.sqlite3
 *.db
+*.egg-info
+build
+dist
 migrations
 node_modules
 __pycache__
