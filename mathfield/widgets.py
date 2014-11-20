@@ -14,10 +14,14 @@ class MathFieldWidget(forms.Textarea):
             attrs['id'], output)
 
         if value:
-            raw = value['raw'] if 'raw' in value else ''
-            html = value['html'] if 'html' in value else ''
+            if isinstance(value, dict):
+                raw = value['raw'] if 'raw' in value else ''
+                html = value['html'] if 'html' in value else ''
+                html = html.replace('"', '\\"').replace("'", "\\'")
+            elif isinstance(value, basestring):
+                raw = value
+                html = ''
             raw = cgi.escape(raw.replace('\\', '\\\\'))
-            html = html.replace('"', '\\"')
         else:
             raw = html = ''
 

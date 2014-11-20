@@ -1,11 +1,11 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.shortcuts import render
-from tests.models import Math
+from tests.models import Lesson
 
 
 def lessons(request):
-    lessons = Math.objects.all()
+    lessons = Lesson.objects.all()
     return render(request, 'tests/lessons.html', {'lessons': lessons})
 
 

@@ -44,9 +44,18 @@
             returnlist.push(prestring);
             loc += prestring.length;
 
-            rawMath = rawMath.replace('\\$', '\\$ ');
-            var html = katex.renderToString(rawMath);
-            html = html.replace('\\$ ', '$');
+            rawMathSpaced = rawMath.replace('\\$', '\\$ ');
+            var success = true;
+            try{
+                var html = katex.renderToString(rawMathSpaced);
+            }
+            catch(err){
+                var success = false;
+                var html = '<span style="color: red;">' + rawMath + '</span>';
+            }
+            if(success){
+                 html = html.replace('\\$ ', '$');
+            }
             returnlist.push(html);
 
             loc += match[1].length + mathlength + 1;

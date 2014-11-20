@@ -1,18 +1,17 @@
 from django.contrib import admin
 from django import forms
 from mathfield.widgets import MathFieldWidget
-from tests.models import Math
+from tests.models import Lesson
 
-class MathAdminForm(forms.ModelForm):
+class LessonAdminForm(forms.ModelForm):
     class Meta:
         widgets = {
-            'math': MathFieldWidget,
-            'math2': MathFieldWidget
+            'lesson_plan': MathFieldWidget,
         }
 
 
-class MathAdmin(admin.ModelAdmin):
-    form = MathAdminForm
+class LessonAdmin(admin.ModelAdmin):
+    form = LessonAdminForm
 
 
-admin.site.register(Math, MathAdmin)
+admin.site.register(Lesson, LessonAdmin)

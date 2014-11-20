@@ -78,7 +78,7 @@ def render_to_html(raw):
             env=env, 
             stdout=subprocess.PIPE, 
             stderr=subprocess.PIPE)
-    except WindowsError:
+    except (WindowsError, OSError):
         raise NodeError("Node.js is not on your system path.")
     else:
         node_output, node_error = p.communicate()
