@@ -19,7 +19,7 @@ Get it installed with::
 Add :code:`'mathfield'` to your :code:`INSTALLED_APPS` in your Django project's
 :code:`settings.py`.
 
-Add a :code:`MathField` to one of your models like this::
+Add a :code:`MathField` to one of your models like this:
 
 .. code:: python
 
@@ -31,7 +31,7 @@ Add a :code:`MathField` to one of your models like this::
 
 Get live previews of the rendered LaTeX while you're editing in the Django admin
 by adding :code:`MathFieldWidget` as a widget when registering your model in
-:code:`admin.py`::
+:code:`admin.py`:
 
 .. code:: python
 
@@ -99,7 +99,7 @@ be rendered for you.
 
 Let's say you are using the :code:`Lesson` model from above, which has a
 :code:`lesson_plan` column that is a MathField. You can create a new instance
-with::
+with:
 
 .. code:: python
     
@@ -115,7 +115,7 @@ library other than `KaTeX <https://github.com/Khan/KaTeX>`_.
 The function :code:`store_math` provided in the mathfield API is provided for
 convenience. If you don't know the HTML, you don't have to provide it, and it
 will be generated for you. Otherwise, you can pass in the HTML and it will just
-use that. For example::
+use that. For example:
 
 .. code:: python
 
@@ -134,7 +134,7 @@ Database Lookups
 ****************
 
 When you look up an existing MathField, you get a dictionary with the keys
-:code:`raw` and :code:`html`::
+:code:`raw` and :code:`html`:
 
 .. code:: python
 
@@ -149,7 +149,7 @@ Just Getting Some HTML
 **********************
 
 If you just want to pass in a string and get the HTML, use 
-:code:`render_to_html`::
+:code:`render_to_html`:
 
 .. code:: python
 
