@@ -8,7 +8,7 @@ module.exports = function(grunt) {
                     'mathfield/static/mathfield/js/mathfield.min.js': [
                         'mathfield/static/mathfield/js/mathfield_admin.js',
                         'mathfield/static/mathfield/js/encoder.js',
-                        'katex.min.js'
+                        'mathfield/static/mathfield/js/katex.min.js'
                     ]
                 },
                 options: {

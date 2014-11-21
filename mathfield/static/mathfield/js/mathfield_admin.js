@@ -45,8 +45,16 @@
             loc += prestring.length;
 
             rawMathSpaced = rawMath.replace('\\$', '\\$ ');
-            var html = katex.renderToString(rawMathSpaced);
-            html = html.replace('\\$ ', '$');
+            var html;
+            try{
+                var html = katex.renderToString(rawMathSpaced);
+                html = html.replace('\\$ ', '$');
+            }
+            catch(err){
+                // KaTeX failed, most likely because the user entired bad LaTeX.
+                // Display the user's raw text in red instead.
+                html = '<span style="color: red;">' + rawMath + '</span>'
+            }
             returnlist.push(html);
 
             loc += match[1].length + mathlength + 1;
