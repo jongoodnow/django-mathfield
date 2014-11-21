@@ -55,13 +55,16 @@ by adding :code:`MathFieldWidget` as a widget when registering your model in
     admin.site.register(Lesson, LessonAdmin)
 
 After adding some data to your database, you can output the rendered HTML to
-a template::
+a template:
+
+.. code:: html
 
     <!DOCTYPE HTML>
     <html>
         <head>
             {% load staticfiles %}
-            <link rel="stylesheet" type="text/css" href="{% static 'mathfield/css/mathfield.css' %}">
+            <link rel="stylesheet" type="text/css" 
+                href="{% static 'mathfield/css/mathfield.css' %}">
         </head>
         <body>
             <div>
