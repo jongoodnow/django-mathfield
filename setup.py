@@ -7,7 +7,7 @@ from setuptools import setup
 setup(
 	name="django-mathfield",
 	version="0.1.0",
-	description="Write LaTeX in the Django admin and have it rendered to HTML for you.",
+	description="A Django model field for writing and displaying LaTeX",
 	long_description=codecs.open(
 		os.path.join(os.path.dirname(__file__), 'README.rst'), 'r', 'utf-8').read(),
 	author="Jonathan Goodnow",
