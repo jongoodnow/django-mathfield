@@ -1,17 +1,16 @@
 django-mathfield
 ================
 
-MathField is a model field that allows you to input LaTeX and store the compiled
-HTML on your database. It comes with a form for the Django Admin that provides
-live previews of your rendered LaTeX.
+MathField is a model field for Django that allows you to input LaTeX and store 
+the compiled HTML on your database. It comes with a form for the Django Admin 
+that provides live previews of your rendered LaTeX.
 
 Installation and Setup
 ----------------------
 
 Your server needs to have 
 `Python 2.7 <https://www.python.org/downloads/release/python-278/>`_ and 
-`Django 1.7 <https://www.djangoproject.com/download/>`_. Python 3 support is 
-coming soon.
+`Django 1.7 <https://www.djangoproject.com/download/>`_.
 
 Get it installed with::
 
@@ -25,10 +24,10 @@ Add a :code:`MathField` to one of your models like this::
 .. code:: python
 
     from django.db import models
-    from mathfield.models import MathField
+    import mathfield
 
     class Lesson(models.Model):
-        lesson_plan = MathField()
+        lesson_plan = mathfield.MathField()
 
 Get live previews of the rendered LaTeX while you're editing in the Django admin
 by adding :code:`MathFieldWidget` as a widget when registering your model in
@@ -38,14 +37,14 @@ by adding :code:`MathFieldWidget` as a widget when registering your model in
 
     from django.contrib import admin
     from django import forms
-    from mathfield.widgets import MathFieldWidget
     from yourapp.models import Lesson
+    import mathfield
 
     class LessonAdminForm(forms.ModelForm):
 
         class Meta:
             widgets = {
-                'lesson_plan': MathFieldWidget
+                'lesson_plan': mathfield.MathFieldWidget
             }
 
 
@@ -66,7 +65,7 @@ a template::
         </head>
         <body>
             <div>
-                Raw LaTeX: {{ lesson.lesson_plan.raw }}
+                Raw text/LaTeX: {{ lesson.lesson_plan.raw }}
             </div>
             <div>
                 Rendered HTML: {{ lesson.lesson_plan.html|safe }}
@@ -75,7 +74,7 @@ a template::
     </html>
 
 Make sure that you include the :code:`mathfield.css` stylesheet in your template
-head, and include :code:`|safe` with with the MathField HTML value. This will
+head, and include :code:`|safe` with the MathField HTML value. This will
 give Django permission to render the text in that field as HTML. It is safe to
 do this provided that you only update the HTML using the form in the Django
 admin or the functions provided in the MathField API. Be very careful when
@@ -84,7 +83,7 @@ updating the HTML yourself!
 Developer API
 -------------
 
-You can modify MathFields and compile LaTeX on your server without the admin
+You can modify MathField data and compile LaTeX on your server without the admin
 form if you would like. To be able to compile LaTeX serverside, you must have
 `node.js <http://nodejs.org/download/>`_ (v0.10+) installed and it must be on 
 your system path as an executable called :code:`node`. Note that this is not
@@ -110,7 +109,7 @@ with::
 You can also pass a dictionary that contains the raw text under the key
 :code:`raw` and the already rendered HTML under the key :code:`html`. This is
 particularly useful if you want to generate the HTML yourself, perhaps because
-you can't install node.js on your server, or you want to use a typesetting
+you can't install node.js on your server, or because you want to use a typesetting
 library other than `KaTeX <https://github.com/Khan/KaTeX>`_.
 
 The function :code:`store_math` provided in the mathfield API is provided for
